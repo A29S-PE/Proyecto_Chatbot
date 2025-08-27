@@ -23,11 +23,19 @@ class ClassifierManager:
         label_id = preds.argmax(axis=-1)[0]
 
         id2label = {
-            0: "alegría",
-            1: "tristeza",
-            2: "enojo",
-            3: "miedo",
-            4: "sorpresa"
+            0: "amor",
+            1: "confusion",
+            2: "culpa",
+            3: "deseo",
+            4: "disgusto",
+            5: "enojo",
+            6: "felicidad",
+            7: "miedo",
+            8: "neutral",
+            9: "sarcasmo",
+            10: "sorpesa",
+            11: "tristeza",
+            12: "verguenza"
         }
 
         return id2label[label_id]
@@ -45,11 +53,13 @@ class ClassifierManager:
         label_id = preds.argmax(axis=-1)[0]
 
         id2label = {
-            0: "alegría",
-            1: "tristeza",
-            2: "enojo",
-            3: "miedo",
-            4: "sorpresa"
+            0: "ansiedad",
+            1: "bipolaridad",
+            2: "depresion",
+            3: "estres",
+            4: "normal",
+            5: "suicida",
+            6: "transtorno de personalidad"
         }
 
         return id2label[label_id]
