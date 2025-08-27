@@ -1,23 +1,16 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain.llms import HuggingFacePipeline
 from config import LLM_MODEL
-import torch
 
 def load_llm():
-    tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL)
+    print(f"Cargando modelo {LLM_MODEL}...")
 
-    quant_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4"
-    )
+    tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL)
 
     model = AutoModelForCausalLM.from_pretrained(
         LLM_MODEL,
-        device_map="auto",
-        torch_dtype=torch.float16,
-        quantization_config=quant_config,
+        device_map="auto", 
+        torch_dtype="auto",
         trust_remote_code=True
     )
 

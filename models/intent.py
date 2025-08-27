@@ -8,4 +8,3 @@ class IntentClassifier:
             return response.json()["intent"]["name"]
         except Exception:
             return "desconocido"
-
