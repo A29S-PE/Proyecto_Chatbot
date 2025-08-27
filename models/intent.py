@@ -7,4 +7,5 @@ class IntentClassifier:
             response = requests.post(RASA_URL, json={"text": text})
             return response.json()["intent"]["name"]
         except Exception:
-            return "unknown"
+            return "desconocido"
+
