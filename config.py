@@ -2,8 +2,8 @@
 LLM_MODEL = "google/gemma-2b-it"
 
 # Configuración de clasificadores
-EMOTION_MODEL = "/content/drive/MyDrive/models/bert_emociones.h5"
-MENTAL_MODEL = "/content/drive/MyDrive/models/bert_estado_mental.h5"
+EMOTION_MODEL = "/content/drive/MyDrive/models/bert_emociones"
+MENTAL_MODEL = "/content/drive/MyDrive/models/bert_estado_mental"
 TOKENIZER_MODEL = "dccuchile/bert-base-spanish-wwm-uncased"
 
 # URL de RASA
