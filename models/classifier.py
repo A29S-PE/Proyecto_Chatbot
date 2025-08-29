@@ -1,13 +1,13 @@
 import tensorflow as tf
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+from transformers import AutoTokenizer, TFBertModel
 from config import EMOTION_MODEL, MENTAL_MODEL, TOKENIZER_MODEL
 
 class ClassifierManager:
     def __init__(self):
-        self.emotion_model = tf.keras.models.load_model(EMOTION_MODEL)
+        self.emotion_model = tf.keras.models.load_model(EMOTION_MODEL, custom_objects={"TFBertModel": TFBertModel})
         self.emotion_tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_MODEL)
 
-        self.mental_model = tf.keras.models.load_model(MENTAL_MODEL)
+        self.mental_model = tf.keras.models.load_model(MENTAL_MODEL, custom_objects={"TFBertModel": TFBertModel})
         self.mental_tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_MODEL)
 
     def classify_emotion(self, text: str) -> str:
@@ -16,7 +16,7 @@ class ClassifierManager:
             return_tensors="tf",
             truncation=True,
             padding=True,
-            max_length=128
+            max_length=256
         )
 
         preds = self.emotion_model.predict(dict(inputs), verbose=0)
@@ -46,7 +46,7 @@ class ClassifierManager:
             return_tensors="tf",
             truncation=True,
             padding=True,
-            max_length=128
+            max_length=384
         )
 
         preds = self.mental_model.predict(dict(inputs), verbose=0)
@@ -63,4 +63,3 @@ class ClassifierManager:
         }
 
         return id2label[label_id]
-
