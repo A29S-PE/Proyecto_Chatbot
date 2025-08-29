@@ -15,10 +15,10 @@ class ClassifierManager:
             text,
             return_tensors="tf",
             truncation=True,
-            padding=True,
+            padding='max_length',
             max_length=256
         )
-
+        
         preds = self.emotion_model.predict(dict(inputs), verbose=0)
         label_id = preds.argmax(axis=-1)[0]
 
@@ -45,7 +45,7 @@ class ClassifierManager:
             text,
             return_tensors="tf",
             truncation=True,
-            padding=True,
+            padding='max_length',
             max_length=384
         )
 
