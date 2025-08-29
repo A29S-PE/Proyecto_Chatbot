@@ -8,4 +8,3 @@ TOKENIZER_MODEL = "dccuchile/bert-base-spanish-wwm-uncased"
 
 # URL de RASA
 RASA_URL = "http://localhost:5005/model/parse"
-
