@@ -20,7 +20,7 @@ class ClassifierManager:
         )
         
         preds = self.emotion_model.predict(dict(inputs), verbose=0)
-        label_id = preds.argmax(axis=-1)[0]
+        label_id = preds['outputs'].argmax(axis=-1)[0]
 
         id2label = {
             0: "amor",
@@ -50,7 +50,7 @@ class ClassifierManager:
         )
 
         preds = self.mental_model.predict(dict(inputs), verbose=0)
-        label_id = preds.argmax(axis=-1)[0]
+        label_id = preds['outputs'].argmax(axis=-1)[0]
 
         id2label = {
             0: "ansiedad",
@@ -63,3 +63,4 @@ class ClassifierManager:
         }
 
         return id2label[label_id]
+
