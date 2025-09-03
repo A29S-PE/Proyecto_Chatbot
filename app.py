@@ -3,8 +3,8 @@ from schemas.chat import ChatRequest
 from models.classifier import ClassifierManager
 from models.intent import IntentClassifier
 from models.llm import load_llm
-from chains.policy import build_policy_chain
-from chains.response import build_response_chain
+from chains.policy import get_conversation_action
+from chains.response import get_conversation_response
 from memory.memory import MemoryManager
 from pydantic import BaseModel
 
@@ -29,9 +29,7 @@ class ChatResponse(BaseModel):
 
 classifier_manager = ClassifierManager()
 intent_classifier = IntentClassifier()
-llm = load_llm()
-policy_chain = build_policy_chain(llm)
-response_chain = build_response_chain(llm)
+pipe = load_llm()
 memory_manager = MemoryManager()
 
 # =======================
@@ -55,21 +53,11 @@ async def chat_endpoint(request: ChatRequest):
     memory = memory_manager.get_memory(user_id)
     history_str = memory.load_memory_variables({})["history"]
     print('obtuvo historia')
-    action = policy_chain.run(
-        emotion=emotion,
-        mental_state=mental_state,
-        intent=intent,
-        history=history_str,
-        message=message
-    ).strip()
+    action = get_conversation_action(pipe,emotion,mental_state,intent,message,history_str).strip()
     print(action)
     # Paso 3: Generación
-    response = response_chain.run(
-        action=action,
-        history=history_str,
-        message=message
-    ).strip()
-
+    response = get_conversation_response(pipe,action,message,history_str).strip()
+    print(response)
     # Actualizar memoria
     memory.save_context({"input": message}, {"output": response})
 

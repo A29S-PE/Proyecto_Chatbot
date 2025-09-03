@@ -63,4 +63,3 @@ class ClassifierManager:
         }
 
         return id2label[label_id]
-

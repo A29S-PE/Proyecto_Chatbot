@@ -1,28 +1,15 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from langchain.llms import HuggingFacePipeline
+from transformers import pipeline
 from config import LLM_MODEL
+import torch
 
 def load_llm():
     print(f"Cargando modelo {LLM_MODEL}...")
 
-    tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL)
-
-    model = AutoModelForCausalLM.from_pretrained(
-        LLM_MODEL,
-        device_map="auto", 
-        torch_dtype="auto",
-        trust_remote_code=True
-    )
-
     pipe = pipeline(
         "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        max_new_tokens=512,
-        temperature=0.7,
-        top_p=0.9,
+        model=LLM_MODEL,
+        torch_dtype=torch.bfloat16,
+        device_map="auto"
     )
 
-    llm = HuggingFacePipeline(pipeline=pipe)
-
-    return llm
+    return pipe
