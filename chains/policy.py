@@ -11,7 +11,7 @@ def get_conversation_action(pipe: Pipeline, emotion, mental_state, intent, messa
             temperature=0.7, top_k=50, top_p=0.95, return_full_text=return_full_text,
             pad_token_id=pipe.tokenizer.eos_token_id
         )
-        return outputs, prompt
+        return outputs
 
     messages = [
         {
@@ -19,12 +19,12 @@ def get_conversation_action(pipe: Pipeline, emotion, mental_state, intent, messa
             "content": f"""
               Eres un planificador de diálogo en español que decide la acción más adecuada basándose en la emoción, el estado mental, la intención del usuario y su historial.
 
-              Dispones de la siguiente información:
-              - Emoción: {emotion}
-              - Estado mental: {mental_state}
-              - Intención: {intent}
-              - Historial: {history}
-              - Mensaje actual: {message}
+              Recibiras siguiente información del usuario:
+              - Emoción
+              - Estado mental
+              - Intención
+              - Historial
+              - Mensaje actual
 
               Las acciones disponibles son:
               1. ResponderEmpaticamente() → Generar una respuesta empática, reconociendo la emoción del usuario.
@@ -44,12 +44,20 @@ def get_conversation_action(pipe: Pipeline, emotion, mental_state, intent, messa
               6. Si el usuario hace preguntas que no están relacionadas con salud mental o emociones → FueraDeDominio().  
 
               Devuelve solo el nombre de la acción exacta (ejemplo: `ResponderEmpaticamente()`) sin explicaciones adicionales."""
-        }
+        },
+        {
+            "role": "user", 
+            "content": f"""
+              Emoción: {emotion}
+              Estado mental: {mental_state}
+              Intención: {intent}
+              Historial: {history}
+              Mensaje actual: {message}
+              Acción:
+            """}
     ]
 
-    prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-
-    outputs, prompt = generate_assistant_response(messages, return_full_text=False, num_return_sequences=1)
+    outputs = generate_assistant_response(messages, return_full_text=False, num_return_sequences=1)
 
     assistant_response = outputs[0]["generated_text"]
 

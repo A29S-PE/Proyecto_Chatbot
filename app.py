@@ -43,21 +43,21 @@ async def chat_endpoint(request: ChatRequest):
 
     # Paso 1: Clasificación
     emotion = classifier_manager.classify_emotion(message)
-    print(emotion)
+    print('La emocion es: ', emotion)
     mental_state = classifier_manager.classify_mental_state(message)
-    print(mental_state)
+    print('El estado mental es: ',mental_state)
     intent = intent_classifier.classify_intent(message)
-    print(intent)
+    print('La intencion es: ',intent)
 
     # Paso 2: Política
     memory = memory_manager.get_memory(user_id)
     history_str = memory.load_memory_variables({})["history"]
-    print('obtuvo historia')
+    print('El historial es: ', history_str[0:30])
     action = get_conversation_action(pipe,emotion,mental_state,intent,message,history_str).strip()
-    print(action)
+    print('La acción es: ', action)
     # Paso 3: Generación
     response = get_conversation_response(pipe,action,message,history_str).strip()
-    print(response)
+    print('Respuesta: ', response)
     # Actualizar memoria
     memory.save_context({"input": message}, {"output": response})
 
