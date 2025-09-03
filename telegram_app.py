@@ -2,7 +2,7 @@ from telegram.ext import Application, MessageHandler, filters
 import requests
 
 TOKEN = '8437215326:AAGLKoJjRB_JZ5KNmv46B8Kf_sNYmS-G8mU'
-API_URL = 'https://e7d87dd325ea.ngrok-free.app/chat'
+API_URL = 'https://15da04af6102.ngrok-free.app/chat'
 
 async def handle_message(update, context):
     user_id = str(update.effective_user.id)
@@ -13,7 +13,9 @@ async def handle_message(update, context):
         "Content-Type": "application/json"
     }
     try:
-        response = requests.post(API_URL, json=data, headers=headers).json()['response']
+        r_json = requests.post(API_URL, json=data, headers=headers).json()
+        print(r_json)
+        response = r_json['response']
     except:
         response = 'Ocurrió un error, por favor vuelve a escribirme 🥺'
     print(response)
