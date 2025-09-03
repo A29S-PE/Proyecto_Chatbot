@@ -3,11 +3,11 @@ from transformers import Pipeline
 
 def get_conversation_action(pipe: Pipeline, emotion, mental_state, intent, message, history):
 
-    def generate_assistant_response(messages, return_full_text=False, num_return_sequences=4):
+    def generate_assistant_response(messages, return_full_text=False, num_return_sequences=1):
         torch.manual_seed(0)
         prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         outputs = pipe(
-            prompt, max_new_tokens=512, num_return_sequences=num_return_sequences, do_sample=True,
+            prompt, max_new_tokens=256, num_return_sequences=num_return_sequences, do_sample=True,
             temperature=0.7, top_k=50, top_p=0.95, return_full_text=return_full_text,
             pad_token_id=pipe.tokenizer.eos_token_id
         )
