@@ -21,6 +21,10 @@ class ChatRequest(BaseModel):
 
 # Modelo de salida
 class ChatResponse(BaseModel):
+    user_id: str
+    emotion: str
+    mental_state: str
+    intent: str
     response: str
 
 classifier_manager = ClassifierManager()
