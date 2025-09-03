@@ -1,5 +1,5 @@
 # Configuración de LLM
-LLM_MODEL = "google/gemma-2b-it"
+LLM_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 
 # Configuración de clasificadores
 EMOTION_MODEL = "/content/drive/MyDrive/models/bert_emociones"
