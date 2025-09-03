@@ -59,3 +59,9 @@ def get_conversation_response(pipe: Pipeline, emotion, mental_state, intent, mes
             """
         }
     ]
+
+    outputs = generate_assistant_response(messages, return_full_text=False, num_return_sequences=1)
+
+    assistant_response = outputs[0]["generated_text"]
+
+    return assistant_response
