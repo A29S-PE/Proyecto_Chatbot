@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from schemas.chat import ChatRequest
 from models.classifier import ClassifierManager
 from models.intent import IntentClassifier
 from models.llm import load_llm
@@ -64,3 +63,4 @@ async def chat_endpoint(request: ChatRequest):
     }
 
 # uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
