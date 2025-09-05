@@ -5,7 +5,7 @@ from models.llm import load_llm
 from chains.policy_and_response import get_conversation_response
 from memory.memory import MemoryManager
 from pydantic import BaseModel
-
+import time
 
 app = FastAPI(
     title="Chatbot Conversacional",
@@ -37,6 +37,8 @@ async def chat_endpoint(request: ChatRequest):
     user_id = request.user_id
     message = request.message
 
+    start_time = time.time()
+    
     # Paso 1: Clasificación
     emotion = classifier_manager.classify_emotion(message)
     print('La emocion es: ', emotion)
@@ -54,6 +56,10 @@ async def chat_endpoint(request: ChatRequest):
     # Actualizar memoria
     memory.save_context({"input": message}, {"output": response})
 
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Tiempo de respuesta: {elapsed_time:.2f} segundos")
+
     return {
         "user_id": user_id,
         "emotion": emotion,
@@ -63,4 +69,3 @@ async def chat_endpoint(request: ChatRequest):
     }
 
 # uvicorn app:app --reload --host 0.0.0.0 --port 8000
-
