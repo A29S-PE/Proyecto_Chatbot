@@ -3,7 +3,7 @@ from models.classifier import ClassifierManager
 from models.intent import IntentClassifier
 from models.llm import load_llm
 from chains.policy_and_response import get_conversation_response
-from memory.memory import MemoryManager
+from memory.memory import MemoryManager, format_history
 from pydantic import BaseModel
 import time
 
@@ -28,7 +28,7 @@ class ChatResponse(BaseModel):
 
 classifier_manager = ClassifierManager()
 intent_classifier = IntentClassifier()
-tokenizer, model = load_llm()
+pipe = load_llm()
 memory_manager = MemoryManager()
 
 
@@ -49,9 +49,10 @@ async def chat_endpoint(request: ChatRequest):
 
     # Paso 2: Política y Generación
     memory = memory_manager.get_memory(user_id)
-    history_str = memory.load_memory_variables({})["history"]
-    print('El historial es: ', history_str[0:30])
-    response = get_conversation_response(tokenizer,model,emotion,mental_state,intent,message,history_str).strip()
+    history_msgs = memory.load_memory_variables({})["history"]
+    history_text = format_history(history_msgs)
+    print('El historial es: ', history_text[0:100])
+    response = get_conversation_response(pipe,emotion,mental_state,intent,message,history_text).strip()
     print('Respuesta: ', response)
     # Actualizar memoria
     memory.save_context({"input": message}, {"output": response})
@@ -69,4 +70,3 @@ async def chat_endpoint(request: ChatRequest):
     }
 
 # uvicorn app:app --reload --host 0.0.0.0 --port 8000
-
