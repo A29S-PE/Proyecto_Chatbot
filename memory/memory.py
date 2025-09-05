@@ -12,3 +12,12 @@ class MemoryManager:
                 k=5
             )
         return self.user_memories[user_id]
+
+
+def format_history(history_msgs):
+    formatted = "Estos son los últimos 5 mensajes entre el usuario y tú:\n"
+    for msg in history_msgs:
+        role = "user" if msg["role"] == "user" else "assistant"
+        content = msg["content"].replace("\n", " ")
+        formatted += f"{role}: '{content}'\n"
+    return formatted
