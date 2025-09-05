@@ -1,8 +1,18 @@
 import torch
-from transformers import PreTrainedTokenizer, PreTrainedModel
+from transformers import Pipeline
 
-def get_conversation_response(tokenizer: PreTrainedTokenizer, model: PreTrainedModel, emotion, mental_state, intent, message, history):
+def get_conversation_response(pipe: Pipeline, emotion, mental_state, intent, message, history):
 
+    def generate_assistant_response(messages, return_full_text=False, num_return_sequences=1):
+        torch.manual_seed(0)
+        prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        outputs = pipe(
+            prompt, max_new_tokens=256, num_return_sequences=num_return_sequences, do_sample=True,
+            temperature=0.7, top_k=50, top_p=0.95, return_full_text=return_full_text,
+            pad_token_id=pipe.tokenizer.eos_token_id
+        )
+        return outputs
+    
     messages = [
         {
             "role": "system",
@@ -13,9 +23,10 @@ def get_conversation_response(tokenizer: PreTrainedTokenizer, model: PreTrainedM
               - Emoción
               - Estado mental
               - Intención
-              - Historial
               - Mensaje actual
 
+            {history}
+            
             Tu tarea es:
                 1. Analizar la emoción, el estado mental, la intención, el historial y el mensaje del usuario.  
                 2. Decidir internamente la acción más adecuada de la siguiente lista:  
@@ -43,34 +54,14 @@ def get_conversation_response(tokenizer: PreTrainedTokenizer, model: PreTrainedM
                 Emoción: {emotion}  
                 Estado mental: {mental_state}  
                 Intención: {intent}  
-                Historial: {history}  
                 Mensaje actual: {message}  
                 Respuesta:
             """
         }
     ]
 
-    prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    outputs = generate_assistant_response(messages, return_full_text=False, num_return_sequences=1)
 
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-
-    prompt_length = inputs['input_ids'].shape[1]
-    print(prompt_length)
-    if prompt_length > 7500:
-        print(f"Prompt demasiado largo: {prompt_length} tokens")
-    
-    torch.manual_seed(0)
-    output = model.generate(
-        **inputs,
-        max_new_tokens=256,
-        do_sample=True,
-        temperature=0.7,
-        top_k=50,
-        top_p=0.95,
-        pad_token_id=tokenizer.eos_token_id
-    )
-
-    generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
-    assistant_response = generated_text.split('Respuesta:')[-1].strip()
+    assistant_response = outputs[0]["generated_text"]
 
     return assistant_response
