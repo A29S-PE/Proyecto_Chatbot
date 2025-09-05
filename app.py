@@ -28,7 +28,7 @@ class ChatResponse(BaseModel):
 
 classifier_manager = ClassifierManager()
 intent_classifier = IntentClassifier()
-pipe = load_llm()
+tokenizer, model = load_llm()
 memory_manager = MemoryManager()
 
 
@@ -51,7 +51,7 @@ async def chat_endpoint(request: ChatRequest):
     memory = memory_manager.get_memory(user_id)
     history_str = memory.load_memory_variables({})["history"]
     print('El historial es: ', history_str[0:30])
-    response = get_conversation_response(pipe,emotion,mental_state,intent,message,history_str).strip()
+    response = get_conversation_response(tokenizer,model,emotion,mental_state,intent,message,history_str).strip()
     print('Respuesta: ', response)
     # Actualizar memoria
     memory.save_context({"input": message}, {"output": response})
@@ -69,3 +69,4 @@ async def chat_endpoint(request: ChatRequest):
     }
 
 # uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
