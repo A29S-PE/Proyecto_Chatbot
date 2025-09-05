@@ -1,4 +1,5 @@
 from langchain.memory import ConversationBufferWindowMemory
+from langchain.schema import HumanMessage, AIMessage
 
 class MemoryManager:
     def __init__(self):
@@ -18,9 +19,12 @@ def format_history(history_msgs):
     if len(history_msgs) != 0:
         formatted = "Estos son los últimos mensajes entre el usuario y tú:\n"
         for msg in history_msgs:
-            role = "user" if msg["role"] == "user" else "assistant"
-            content = msg["content"].replace("\n", " ")
-            formatted += f"{role}: '{content}'\n"
+            if isinstance(msg, HumanMessage):
+                formatted += f"user: '{msg.content}'\n"
+            elif isinstance(msg, AIMessage):
+                formatted += f"bot: '{msg.content}'\n"
+            else:
+                formatted += f"{msg.type}: '{msg.content}'\n"
     else:
         formatted = ""
     return formatted
