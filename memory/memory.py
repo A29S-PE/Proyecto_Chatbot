@@ -22,9 +22,10 @@ def format_history(history_msgs):
             if isinstance(msg, HumanMessage):
                 formatted += f"user: '{msg.content}'\n"
             elif isinstance(msg, AIMessage):
-                formatted += f"bot: '{msg.content}'\n"
+                formatted += f"assistant: '{msg.content}'\n"
             else:
                 formatted += f"{msg.type}: '{msg.content}'\n"
     else:
         formatted = ""
     return formatted
+
